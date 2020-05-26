@@ -28,8 +28,7 @@ library
       DataTypes
       Types
       Constraints
-      Guards
-      ConGraph
+      Tree
       Scheme
       InferM
       FromCore
@@ -50,7 +49,7 @@ library
 
 test-suite test
   type: exitcode-stdio-1.0
-  main-is: Sequence.hs
+  main-is: Set.hs
   hs-source-dirs:
       test
   ghc-options: -g -O0 -fplugin Lib -fplugin-opt Lib:time -fplugin-opt Lib:unroll

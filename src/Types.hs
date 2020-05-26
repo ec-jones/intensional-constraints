@@ -36,11 +36,13 @@ type RVar = Int
 -- The class of objects that contain refinement variables
 class Refined t m where
   domain :: t -> m [RVar]
-  rename :: RVar -> RVar -> t -> m t
 
   -- Guaranteed to cover every variable and preserve order
   renameAll :: Monad m => [(RVar, RVar)] -> t -> m t
   renameAll xys t = foldM (flip $ uncurry rename) t xys
+
+  rename :: Monad m => RVar -> RVar -> t -> m t
+  rename x y = renameAll [(x, y)]
 
 --  It is necessary to distinguish unrefined sorts vs refined types
 --  Only sorts can appear as arguments to type constructors for three reasons:

@@ -11,9 +11,8 @@ import Control.Monad
 import qualified Data.Map as M
 import Data.Time
 import GhcPlugins
-import Guards
 import IfaceEnv
-import IfaceType
+import IfaceSyn
 import InferCoreExpr
 import InferM
 import Scheme
@@ -21,9 +20,9 @@ import System.Directory
 import TcIface
 import TcRnMonad
 import ToIface
+import Tree
 import TyCoRep
 import Prelude hiding (mod)
-import IfaceSyn
 
 plugin :: Plugin
 plugin = defaultPlugin {pluginRecompile = \_ -> return NoForceRecompile, installCoreToDos = install}
@@ -37,11 +36,9 @@ inferGuts :: [CommandLineOption] -> ModGuts -> CoreM ModGuts
 inferGuts cmd guts@ModGuts {mg_deps = d, mg_module = m, mg_binds = p} = do
   start <- liftIO getCurrentTime
   when ("srcDump" `elem` cmd) $ pprTraceM "" (ppr p)
-
   -- Read command line arguments
   let allowContra = True
   let unrollDataTypes = True
-
   -- Reload saved typeschemes
   deps <- liftIO $ filterM (doesFileExist . interfaceName) (fst <$> dep_mods d)
   hask <- getHscEnv
@@ -72,7 +69,7 @@ inferGuts cmd guts@ModGuts {mg_deps = d, mg_module = m, mg_binds = p} = do
   (gamma, errs) <-
     runInferM
       ( inferProg (dependancySort p)
-          >>= mapM (\(Scheme tyvs dvs t g) -> Scheme tyvs dvs (fmap toIfaceTyCon t) <$> mapM (mapM toList) g)
+          >>= mapM (\(Scheme tyvs dvs t g) -> Scheme tyvs dvs (fmap toIfaceTyCon t) <$> mapM toList g)
       )
       unrollDataTypes
       allowContra

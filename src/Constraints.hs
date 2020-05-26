@@ -1,13 +1,16 @@
-{-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module Constraints
   ( Side (..),
     K (..),
+    Atomic,
+    Constraint (..),
     safe,
     toAtomic,
     constraintLoc,
@@ -17,6 +20,9 @@ where
 
 import Binary
 import Data.Hashable
+import qualified Data.List as L
+import DataTypes
+import GHC.Generics
 import GhcPlugins hiding (L)
 import Types
 import Unique
@@ -26,9 +32,42 @@ data Side = L | R
 
 -- An atomic constructor set with a location tag
 data K (s :: Side) where
+  Con :: Name -> SrcSpan -> K 'L
   Dom :: RVar -> K s
   Set :: UniqSet Name -> SrcSpan -> K 'R
-  Con :: Name -> SrcSpan -> K 'L
+
+type Atomic = Constraint 'L 'R
+
+data Constraint l r
+  = Constraint
+      { left :: K l,
+        right :: K r,
+        dataty :: DataType Name
+      }
+  deriving (Eq, Ord, Generic)
+
+instance Hashable (Constraint l r)
+
+instance (Binary (K l), Binary (K r)) => Binary (Constraint l r) where
+  get bh = do
+    l <- get bh
+    r <- get bh
+    d <- get bh
+    return (Constraint l r d)
+
+  put_ bh (Constraint l r d) = put_ bh l >> put_ bh r >> put_ bh d
+
+instance Outputable (Constraint l r) where
+  ppr (Constraint l r d) = pprCon l <+> arrowt <+> pprCon r
+    where
+      pprCon :: K l -> SDoc
+      pprCon k@(Dom _) = ppr d <> parens (ppr k)
+      pprCon k = ppr k
+
+instance Monad m => Refined (Constraint l r) m where
+  domain (Constraint l r _) = L.union <$> domain l <*> domain r
+
+  rename x y (Constraint l r d) = Constraint <$> rename x y l <*> rename x y r <*> pure d
 
 -- Disregard location in comparison
 instance Eq (K s) where
@@ -38,10 +77,11 @@ instance Eq (K s) where
   _ == _ = False
 
 instance Ord (K s) where
-  Dom x <= Dom x' = x <= x'
-  Set k _ <= Set k' _ = nonDetEltsUniqSet k <= nonDetEltsUniqSet k'
-  Con k _ <= Con k' _ = k <= k'
+  Con a _ <= Con b _ = a <= b
+  Con _ _ <= _ = True
+  Dom x <= Dom y = x <= y
   Dom _ <= _ = True
+  Set as _ <= Set bs _ = nonDetEltsUniqSet as <= nonDetEltsUniqSet bs
   _ <= _ = False
 
 instance Hashable Unique where
@@ -103,16 +143,16 @@ safe (Set ks _) (Con k _) = nonDetEltsUniqSet ks == [k]
 safe _ _ = True
 
 -- Convert constraint to atomic form
-toAtomic :: K l -> K r -> Maybe [(K 'L, K 'R)]
-toAtomic (Dom x) (Dom y)
-  | x /= y = Just [(Dom x, Dom y)]
-toAtomic (Dom x) (Set k l) =
-  Just [(Dom x, Set k l)]
-toAtomic (Set ks l) (Dom x) =
-  Just [(Con k l, Dom x) | k <- nonDetEltsUniqSet ks]
-toAtomic (Con k l) (Dom x) =
-  Just [(Con k l, Dom x)]
-toAtomic k1 k2
+toAtomic :: K l -> K r -> DataType Name -> Maybe [Atomic]
+toAtomic (Dom x) (Dom y) d
+  | x /= y = Just [Constraint (Dom x) (Dom y) d]
+toAtomic (Dom x) (Set k l) d =
+  Just [Constraint (Dom x) (Set k l) d]
+toAtomic (Set ks l) (Dom x) d =
+  Just [Constraint (Con k l) (Dom x) d | k <- nonDetEltsUniqSet ks]
+toAtomic (Con k l) (Dom x) d =
+  Just [Constraint (Con k l) (Dom x) d]
+toAtomic k1 k2 _
   | safe k1 k2 = Just []
   | otherwise = Nothing
 

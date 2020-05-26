@@ -16,15 +16,16 @@ module Scheme
 where
 
 import Binary
-import ConGraph
+import Constraints
+import Tree
 import GhcPlugins hiding (Type, empty, pprTyVars)
 import Types
 import Prelude hiding ((<>))
 
 -- Constrained polymorphic types
-type Scheme s = SchemeGen (Type 'T) (ConGraph s)
+type Scheme s = SchemeGen (Type 'T) (Constraints s)
 
-type IfScheme = SchemeGen (IfType 'T) IfConGraph
+type IfScheme = SchemeGen (IfType 'T) [[Atomic]]
 
 data SchemeGen t g
   = Scheme
@@ -43,11 +44,11 @@ instance Binary IfScheme where
 
   get bh = Scheme <$> get bh <*> get bh <*> get bh <*> get bh
 
-instance Outputable d => Outputable (SchemeGen d IfConGraph) where
+instance Outputable d => Outputable (SchemeGen d [[Atomic]]) where
   ppr scheme =
     case constraints scheme of
       Just cs
-        | cs /= empty ->
+        | cs /= [[]] ->
           hang
             (pprTyVars <> pprConVars <> ppr (body scheme))
             2

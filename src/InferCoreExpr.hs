@@ -7,7 +7,6 @@ module InferCoreExpr
   )
 where
 
-import ConGraph
 import Constraints
 import Control.Monad
 import Control.Monad.RWS
@@ -21,6 +20,7 @@ import InferM
 import Name
 import Outputable hiding (empty)
 import Scheme
+import Tree
 import TyCon
 import Types
 import Prelude hiding (sum)
@@ -77,17 +77,18 @@ inferSubType (t11 :=> t12) (t21 :=> t22) =
 inferSubType (Inj x d as) (Inj y d' _)
   | x /= y = do
     -- Combine Initial and Full datatype constraints
-    unless (d == d') $ do
-      cg <- gets congraph
-      cg' <- mergeLevel x y (fmap getName d) (fmap getName d') cg
-      modify (\s -> s {congraph = cg'})
+    -- TODO: what should merge level actually do?
+    -- unless (d == d') $ do
+    --   cg <- gets congraph
+    --   cg' <- mergeLevel x y (fmap getName d) (fmap getName d') cg
+    --   modify (\s -> s {congraph = cg'})
     emit (Dom x) (Dom y) (d {level = max (level d) (level d')})
     slice x y (d, as)
 inferSubType _ _ = return ()
 
 -- Take the slice of a datatype including parity
 slice :: Monad m => Int -> Int -> (DataType TyCon, [Type 'S]) -> InferM s m ()
-slice x y = void. loop [] True
+slice x y = void . loop [] True
   where
     loop :: Monad m => [TyCon] -> Bool -> (DataType TyCon, [Type 'S]) -> InferM s m [TyCon]
     loop ds p (d, as)
@@ -146,7 +147,7 @@ infer (Core.App e1 (Core.Type e2)) = do
     Forall (a : as) t ->
       return $ Forall as (subTyVar a t' t)
     Mono Ambiguous -> return $ Mono Ambiguous
-    _ -> pprPanic "Type is already saturated!" (ppr t)
+    _ -> pprPanic "Type is already saturated!" (ppr ())
 -- Term application
 infer (Core.App e1 e2) = infer e1 >>= \case
   Forall as Ambiguous -> Forall as Ambiguous <$ infer e2

@@ -13,7 +13,7 @@ module FromCore
   )
 where
 
-import ConGraph
+import Tree
 import Constraints
 import Control.Monad.RWS
 import qualified Data.List as L
@@ -144,8 +144,9 @@ getVar v =
           return fre_scheme {constraints = Nothing}
         Just var_cg -> do
           g <- asks branchGuard
-          var_cg' <- guardWith g var_cg
-          modify (\s -> s {congraph = unionUniq (congraph s) var_cg'})
+          s@InferState { congraph = cg } <- get
+          cg' <- guardWith g var_cg >>= union cg
+          put s{ congraph = cg'}
           return fre_scheme {constraints = Nothing}
     Nothing -> do
       -- Maximise library type
