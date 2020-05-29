@@ -39,170 +39,179 @@ import qualified Data.List as L
 import qualified Data.Map as M
 import Data.Maybe
 import DataTypes
+import Family
 import GhcPlugins hiding (L, Type, empty)
 import Scheme
-import Tree
 import Types
 import Prelude hiding ((<>))
 
 data Error
   = forall l r.
-    Error
+    SrcError
       { collision :: SrcSpan,
-        constraint :: [Constraint l r]
+        constraint :: Constraint l r
       }
 
 instance Outputable Error where
-  ppr Error {collision = c, constraint = as} =
-    vcat
-      [ let l = left a
-            r = right a
-         in text "The constructor: " <> ppr l <> text ", arising at: " <> ppr (constraintLoc l)
-              <> text ", can colide with the pattern: "
-              <> ppr r
-              <> text ", arising at: "
-              <> ppr (constraintLoc r)
-              <> text ", when in the function: "
-              <> ppr c
-        | a <- as
-      ]
+  ppr SrcError {collision = c, constraint = a} =
+    let l = left a
+        r = right a
+     in text "The constructor: " <> ppr l <> text ", arising at: " <> ppr (constraintLoc l)
+          <> text ", can colide with the pattern: "
+          <> ppr r
+          <> text ", arising at: "
+          <> ppr (constraintLoc r)
+          <> text ", when in the function: "
+          <> ppr c
 
 -- The inference monad
-type InferM s m = RWST (InferEnv s) [Error] (InferState s) m
+type InferM = RWS InferEnv [Error] InferState
 
-data InferEnv s
+data InferEnv
   = InferEnv
       { unrollDataTypes :: Bool,
         allowContra :: Bool,
         modName :: Module,
         branchPath :: Path,
-        branchGuard :: Constraints s,
-        varEnv :: Context s,
+        branchGuard :: Family,
+        varEnv :: Context,
         inferLoc :: SrcSpan
       }
 
-data InferState s
+data InferState
   = InferState
       { freshRVar :: RVar,
-        congraph :: Constraints s,
+        congraph :: Family,
         -- Binary decision diagram state
-        memo :: H.HashMap (Memo s) (Constraints s),
+        -- memo :: H.HashMap Memo Family,
         freshId :: ID,
-        nodes :: I.IntMap (Node s),
-        hashes :: H.HashMap (Node s) ID
+        nodes :: I.IntMap Node,
+        hashes :: H.HashMap Node ID
       }
 
-instance Monad m => CsM (InferState s) s (InferM s m) where
-  lookupNode i =
+instance Outputable InferState where
+  ppr state = text "Nodes: " <> vcat (fmap ppr $ I.toList (nodes state))
+
+instance GsM InferM where
+  getNode i =
     gets (I.lookup i . nodes) >>= \case
       Nothing -> error ("No node with that ID!" ++ show i)
       Just n -> return n
-  lookupHash n = gets (H.lookup n . hashes)
-  freshNode n = do
-    s@InferState {nodes = ns, hashes = hs, freshId = i} <- get
-    put
-      s
-        { freshId = i + 1,
-          nodes = I.insert i n ns,
-          hashes = H.insert n i hs
-        }
-    return i
-  memo op a =
-    gets (H.lookup op . InferM.memo) >>= \case
+
+  -- TODO: make empty typ empty
+  fromNode n =
+    gets (H.lookup n . hashes) >>= \case
       Nothing -> do
-        r <- a
-        modify (\s -> s {InferM.memo = H.insert op r (InferM.memo s)})
-        return r
-      Just r -> return r
+        s@InferState {nodes = ns, hashes = hs, freshId = i} <- get
+        put
+          s
+            { freshId = i + 1,
+              nodes = I.insert i n ns,
+              hashes = H.insert n i hs
+            }
+        return $ ID i
+      Just i -> return $ ID i
+
+--  memo op a =
+--    gets (H.lookup op . InferM.memo) >>= \case
+--     Nothing -> do
+--       r <- a
+--       modify (\s -> s {InferM.memo = H.insert op r (InferM.memo s)})
+--       return r
+--     Just r -> return r
 
 -- A fresh refinement variable
-fresh :: Monad m => InferM s m RVar
+fresh :: InferM RVar
 fresh = do
   s@InferState {freshRVar = i} <- get
   put s {freshRVar = i + 1}
   return i
 
 -- Make constructors tagged by the current location
-mkCon :: Monad m => DataCon -> InferM s m (K 'L)
+mkCon :: DataCon -> InferM (K 'L)
 mkCon k = do
   l <- asks inferLoc
   return (Con (getName k) l)
 
-mkSet :: Monad m => [DataCon] -> InferM s m (K 'R)
+mkSet :: [DataCon] -> InferM (K 'R)
 mkSet ks = do
   l <- asks inferLoc
   return (Set (mkUniqSet (getName <$> ks)) l)
 
 -- The environment variables and their types
-type Context s = M.Map Name (Scheme s)
+type Context = M.Map Name Scheme
 
-instance CsM state s m => Refined (Context s) m where
+instance GsM m => Refined Context m where
   domain = foldM (\k -> fmap (L.union k) . domain) []
   rename x = mapM . rename x
 
 -- Insert variables into environment
-putVar :: Monad m => Name -> Scheme s -> InferM s m a -> InferM s m a
+putVar :: Name -> Scheme -> InferM a -> InferM a
 putVar n s = local (\env -> env {varEnv = M.insert n s (varEnv env)})
 
-putVars :: Monad m => Context s -> InferM s m a -> InferM s m a
+putVars :: Context -> InferM a -> InferM a
 putVars ctx = local (\env -> env {varEnv = M.union ctx (varEnv env)})
 
 -- A Path records the terms that have been matched against in the current path
 type Path = [(CoreExpr, [Name])]
 
 -- Check if an expression is in the path
-topLevel :: Monad m => CoreExpr -> InferM s m Bool
+topLevel :: CoreExpr -> InferM Bool
 topLevel e = asks (foldr (\(e', _) es -> not (cheapEqExpr e e') && es) True . branchPath)
 
 -- Check if a branch is possible, i.e. doesn't contradict the current branch
-isBranchReachable :: Monad m => CoreExpr -> DataCon -> InferM s m Bool
+isBranchReachable :: CoreExpr -> DataCon -> InferM Bool
 isBranchReachable e (getName -> k) = asks (foldr (\(e', ks) es -> (not (cheapEqExpr e e') || k `elem` ks) && es) True . branchPath)
 
 -- Locally guard constraints and add expression to path
-branch :: Monad m => CoreExpr -> [DataCon] -> RVar -> DataType TyCon -> InferM s m a -> InferM s m a
-branch e (fmap getName -> ks) x d m
-  | full ks (orig d) = m
+branch :: CoreExpr -> [DataCon] -> RVar -> DataType TyCon -> InferM a -> InferM a
+branch e ks x d m
+  | full (getName <$> ks) (orig d) = m
   | otherwise = do
     curr_guard <- asks branchGuard
-    l <- asks inferLoc
-    cs <- fromList $ maybeToList $ toAtomic (Set (mkUniqSet ks) l) (Dom x) (getName <$> d)
-    new_guard <- union curr_guard cs
-    local
-      ( \env ->
-          env
-            { branchGuard = new_guard,
-              branchPath = (e, ks) : branchPath env
-            }
-      )
-      m
+    s <- mkSet ks
+    case toAtomic s (Dom x) (getName <$> d) of
+      Nothing -> error "Error in creating guard"
+      Just cs -> do
+        new_guard <- foldM (\a c -> insert c Empty a) curr_guard cs 
+        local
+          ( \env ->
+              env
+                { branchGuard = new_guard,
+                  branchPath = (e, getName <$> ks) : branchPath env
+                }
+          )
+          m
 
 -- Locally guard constraints without an associated core expression
-branch' :: Monad m => [DataCon] -> RVar -> DataType TyCon -> InferM s m a -> InferM s m a
-branch' (fmap getName -> ks) x d m
-  | full ks (orig d) = m
+branch' :: [DataCon] -> RVar -> DataType TyCon -> InferM a -> InferM a
+branch' ks x d m
+  | full (getName <$> ks) (orig d) = m
   | otherwise = do
     curr_guard <- asks branchGuard
-    l <- asks inferLoc
-    cs <- fromList $ maybeToList $ toAtomic (Set (mkUniqSet ks) l) (Dom x) (getName <$> d)
-    new_guard <- curr_guard `union` cs
-    local
-      ( \env ->
-          env
-            { branchGuard = new_guard
-            }
-      )
-      m
+    s <- mkSet ks
+    case toAtomic s (Dom x) (getName <$> d) of
+      Nothing -> error "Error in creating guard"
+      Just cs -> do
+        new_guard <- foldM (\a c -> insert c Empty a) curr_guard cs 
+        local
+          ( \env ->
+              env
+                { branchGuard = new_guard
+                }
+          )
+          m
 
-setLoc :: Monad m => RealSrcSpan -> InferM s m a -> InferM s m a
+setLoc :: RealSrcSpan -> InferM a -> InferM a
 setLoc l = local (\env -> env {inferLoc = RealSrcSpan l})
 
-emit :: Monad m => K l -> K r -> DataType TyCon -> InferM s m ()
+emit :: K l -> K r -> DataType TyCon -> InferM ()
 emit k1 k2 d
   | not (trivial (orig d) || full (cons k2) (orig d)) =
     case toAtomic k1 k2 (getName <$> d) of
       Nothing -> do
         l <- asks inferLoc
-        tell [Error l [Constraint k1 k2 (fmap getName d)]]
+        tell [SrcError l (Constraint k1 k2 (fmap getName d))]
       Just cs -> do
         cg <- gets congraph
         g <- asks branchGuard
@@ -214,34 +223,26 @@ full :: [Name] -> TyCon -> Bool
 full ks d = ks == fmap getName (tyConDataCons d)
 
 runInferM ::
-  Monad m =>
-  (forall s. InferM s m a) ->
+  InferM a ->
   Bool ->
   Bool ->
   Module ->
-  M.Map Name (SchemeGen (Type 'T) [[Atomic]]) ->
-  m (a, [Error])
+  M.Map Name Scheme ->
+  (a, InferState, [Error])
 runInferM run unroll allow_contra mod_name init_env =
-  evalRWST
-    ( do
-        env <- mapM (\(Scheme tyvs dvs t g) -> Scheme tyvs dvs t <$> mapM fromList g) init_env
-        local (\e -> e {varEnv = env}) run
+  runRWS
+    (
+        local (\e -> e {varEnv = init_env}) run
     )
     (InferEnv unroll allow_contra mod_name [] Empty M.empty (UnhelpfulSpan (mkFastString "Top level")))
-    (InferState 0 Empty H.empty 0 I.empty H.empty)
+    (InferState 0 Empty 0 I.empty H.empty)
 
 -- Transitively remove local constraints and attach them to variables
-saturate :: Monad m => Context s -> InferM s m (Context s)
+saturate :: Context -> InferM Context
 saturate ts = do
   interface <- domain ts
-  cg <- gets congraph
-  trans M.empty interface cg >>= \case
-    Errors es -> do
-      l <- asks inferLoc
-      tell [Error {collision = l, constraint = es}]
-      modify (\s -> s {InferM.memo = H.empty, hashes = H.empty, congraph = Empty})
-      -- Continue ignoring the constraints from this recursive group
-      return ((\s -> s {boundvs = interface, constraints = Nothing}) <$> ts)
-    cg' -> do
-      modify (\s -> s {InferM.memo = H.empty, hashes = H.empty, congraph = Empty})
-      return ((\s -> s {boundvs = interface, constraints = Just cg'}) <$> ts)
+  cg <- gets congraph >>= restrict interface
+  modify (\s -> s {- InferM.memo = H.empty, -} {hashes = H.empty, congraph = Empty})
+  l <- asks inferLoc
+  tell [SrcError {collision = l, constraint = e} | e <- getErrors cg]
+  return ((\s -> s {boundvs = interface, constraints = Just cg}) <$> ts)

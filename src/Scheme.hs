@@ -17,13 +17,13 @@ where
 
 import Binary
 import Constraints
-import Tree
+import Family
 import GhcPlugins hiding (Type, empty, pprTyVars)
 import Types
 import Prelude hiding ((<>))
 
 -- Constrained polymorphic types
-type Scheme s = SchemeGen (Type 'T) (Constraints s)
+type Scheme = SchemeGen (Type 'T) Family
 
 type IfScheme = SchemeGen (IfType 'T) [[Atomic]]
 
@@ -44,11 +44,11 @@ instance Binary IfScheme where
 
   get bh = Scheme <$> get bh <*> get bh <*> get bh <*> get bh
 
-instance Outputable d => Outputable (SchemeGen d [[Atomic]]) where
+instance Outputable d => Outputable (SchemeGen d Family) where
   ppr scheme =
     case constraints scheme of
       Just cs
-        | cs /= [[]] ->
+        | cs /= Empty ->
           hang
             (pprTyVars <> pprConVars <> ppr (body scheme))
             2
@@ -79,17 +79,6 @@ instance (Monad m, Refined d m, Refined g m) => Refined (SchemeGen d g) m where
             constraints = cg
           }
 
-  renameAll xys s = do
-    bod <- renameAll xys $ body s
-    cg <- mapM (renameAll xys) $ constraints s
-    return $
-      Scheme
-        { tyvars = tyvars s,
-          boundvs = boundvs s,
-          body = bod,
-          constraints = cg
-        }
-
 pattern Mono :: t -> SchemeGen t g
 pattern Mono t =
   Scheme
@@ -109,6 +98,6 @@ pattern Forall as t =
     }
 
 -- Demand a monomorphic type
-mono :: Scheme s -> Type 'T
+mono :: Scheme -> Type 'T
 mono (Mono t) = t
 mono _ = Ambiguous

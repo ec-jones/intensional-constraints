@@ -28,7 +28,7 @@ library
       DataTypes
       Types
       Constraints
-      Tree
+      Family
       Scheme
       InferM
       FromCore

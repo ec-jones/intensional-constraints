@@ -20,18 +20,17 @@ import InferM
 import Name
 import Outputable hiding (empty)
 import Scheme
-import Tree
 import TyCon
 import Types
 import Prelude hiding (sum)
 
-defaultLevel :: Monad m => d -> InferM s m (DataType d)
+defaultLevel :: d -> InferM (DataType d)
 defaultLevel k = do
   u <- asks unrollDataTypes
   if u then return (DataType Initial k) else return (DataType Neutral k)
 
 -- Infer constraints for a (mutually-)recursive bind
-inferRec :: Monad m => Bool -> Core.CoreBind -> InferM s m (Context s)
+inferRec :: Bool -> Core.CoreBind -> InferM Context
 inferRec top bgs = do
   binds <-
     sequence $
@@ -61,10 +60,10 @@ inferRec top bgs = do
     else return ctx
 
 -- Infer constraints for a module
-inferProg :: Monad m => Core.CoreProgram -> InferM s m (Context s)
+inferProg :: Core.CoreProgram -> InferM Context
 inferProg = foldM (\ctx -> fmap (M.union ctx) . putVars ctx . inferRec True) M.empty
 
-inferSubType :: Monad m => Type 'T -> Type 'T -> InferM s m ()
+inferSubType :: Type 'T -> Type 'T -> InferM ()
 inferSubType (Var _) (Var _) = return ()
 inferSubType Ambiguous _ = return ()
 inferSubType _ Ambiguous = return ()
@@ -87,10 +86,10 @@ inferSubType (Inj x d as) (Inj y d' _)
 inferSubType _ _ = return ()
 
 -- Take the slice of a datatype including parity
-slice :: Monad m => Int -> Int -> (DataType TyCon, [Type 'S]) -> InferM s m ()
+slice :: Int -> Int -> (DataType TyCon, [Type 'S]) -> InferM ()
 slice x y = void . loop [] True
   where
-    loop :: Monad m => [TyCon] -> Bool -> (DataType TyCon, [Type 'S]) -> InferM s m [TyCon]
+    loop :: [TyCon] -> Bool -> (DataType TyCon, [Type 'S]) -> InferM [TyCon]
     loop ds p (d, as)
       | trivial (orig d) || orig d `elem` ds = return ds
       | otherwise = do
@@ -107,7 +106,7 @@ slice x y = void . loop [] True
           )
           ds
           (tyConDataCons $ orig d)
-    step :: Monad m => [TyCon] -> Bool -> Type 'T -> InferM s m [TyCon]
+    step :: [TyCon] -> Bool -> Type 'T -> InferM [TyCon]
     step ds p (Inj _ d' as') = do
       if p
         then emit (Dom x) (Dom y) d'
@@ -119,7 +118,7 @@ slice x y = void . loop [] True
     step ds _ _ = return ds
 
 -- Infer constraints for a program expression
-infer :: Monad m => Core.CoreExpr -> InferM s m (Scheme s)
+infer :: Core.CoreExpr -> InferM Scheme
 infer (Core.Var v) =
   case Core.isDataConId_maybe v of
     Just k

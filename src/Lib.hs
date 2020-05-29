@@ -20,7 +20,6 @@ import System.Directory
 import TcIface
 import TcRnMonad
 import ToIface
-import Tree
 import TyCoRep
 import Prelude hiding (mod)
 
@@ -47,34 +46,32 @@ inferGuts cmd guts@ModGuts {mg_deps = d, mg_module = m, mg_binds = p} = do
           { if_doc = text "initIfaceLoad",
             if_rec_types = Nothing
           }
-  env <-
-    liftIO $ initTcRnIf 'i' hask gbl (mkIfLclEnv m empty False) $
-      foldM
-        ( \env m_name -> do
-            bh <- liftIO $ readBinMem $ interfaceName m_name
-            cache <- mkNameCacheUpdater
-            ictx <- M.fromList <$> liftIO (getWithUserData cache bh)
-            ctx <-
-              mapM
-                ( \(Scheme tyvs dvs ift g) -> do
-                    t <- mapM tcIfaceTyCon ift
-                    return (Scheme tyvs dvs t g)
-                )
-                ictx
-            return (M.union ctx env)
-        )
-        M.empty
-        deps
+  env <- return M.empty
+    -- liftIO $ initTcRnIf 'i' hask gbl (mkIfLclEnv m empty False) $
+    --   foldM
+    --     ( \env m_name -> do
+    --         bh <- liftIO $ readBinMem $ interfaceName m_name
+    --         cache <- mkNameCacheUpdater
+    --         ictx <- M.fromList <$> liftIO (getWithUserData cache bh)
+    --         ctx <-
+    --           mapM
+    --             ( \(Scheme tyvs dvs ift g) -> do
+    --                 t <- mapM tcIfaceTyCon ift
+    --                 return (Scheme tyvs dvs t g)
+    --             )
+    --             ictx
+    --         return (M.union ctx env)
+    --     )
+    --     M.empty
+    --     deps
   -- Infer constraints
-  (gamma, errs) <-
-    runInferM
-      ( inferProg (dependancySort p)
-          >>= mapM (\(Scheme tyvs dvs t g) -> Scheme tyvs dvs (fmap toIfaceTyCon t) <$> mapM toList g)
-      )
-      unrollDataTypes
-      allowContra
-      m
-      env
+  let (gamma, state, errs) =
+        runInferM
+          (inferProg (dependancySort p))
+          unrollDataTypes
+          allowContra
+          m
+          env
   -- Display typeschemes
   liftIO
     $ mapM_
@@ -84,18 +81,20 @@ inferGuts cmd guts@ModGuts {mg_deps = d, mg_module = m, mg_binds = p} = do
           putStrLn ""
       )
     $ M.toList gamma
+
+  liftIO $ putStrLn $ showSDocUnsafe $ ppr state
   -- Display errors
   liftIO $ mapM_ (putStrLn . showSDocUnsafe . ppr) errs
   -- Save typescheme to temporary file
-  exist <- liftIO $ doesDirectoryExist "interface"
-  liftIO $ unless exist (createDirectory "interface")
-  bh <- liftIO $ openBinMem 1000
-  liftIO $ putWithUserData (const $ return ()) bh (M.toList $ M.filterWithKey (\k _ -> isExternalName k) gamma)
-  liftIO $ writeBinMem bh $ interfaceName $ moduleName m
-  stop <- liftIO getCurrentTime
-  when ("time" `elem` cmd) $ do
-    liftIO $ print $ diffUTCTime stop start
-    liftIO $ print (M.size gamma)
+  -- exist <- liftIO $ doesDirectoryExist "interface"
+  -- liftIO $ unless exist (createDirectory "interface")
+  -- bh <- liftIO $ openBinMem 1000
+  -- liftIO $ putWithUserData (const $ return ()) bh (M.toList $ M.filterWithKey (\k _ -> isExternalName k) gamma)
+  -- liftIO $ writeBinMem bh $ interfaceName $ moduleName m
+  -- stop <- liftIO getCurrentTime
+  -- when ("time" `elem` cmd) $ do
+  --   liftIO $ print $ diffUTCTime stop start
+  --   liftIO $ print (M.size gamma)
   return guts
 
 tcIfaceTyCon :: IfaceTyCon -> IfL TyCon
