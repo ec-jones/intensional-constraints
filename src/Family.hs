@@ -116,21 +116,21 @@ hasUnsafeEdges = getAny . foldMap (HM.foldrWithKey (\x -> mappend . foldMap (Any
 
 -- Take the transitive closure of a graph from a specified frontier
 trans :: AdjMap -> HS.HashSet (K 'L) -> AdjMap
-trans g s = HM.mapWithKey (\d dm -> evalState (foldM (go d) dm s) HS.empty) g
+trans g s = (\dm -> evalState (foldM go dm s) HS.empty) <$> g
   where
-    go :: DataType Name -> HM.HashMap (K 'L) (HS.HashSet (K 'R)) -> K 'L -> State (HS.HashSet (K 'L)) (HM.HashMap (K 'L) (HS.HashSet (K 'R)))
-    go d sg l =
+    go :: HM.HashMap (K 'L) (HS.HashSet (K 'R)) -> K 'L -> State (HS.HashSet (K 'L)) (HM.HashMap (K 'L) (HS.HashSet (K 'R)))
+    go sg l =
       gets (HS.member l) >>= \case
         True -> return sg -- Skip explored nodes
         False -> do
           modify (HS.insert l) -- Add x to the set of explored nodes
-          case HM.lookup d g >>= HM.lookup l of -- Lookup edges from the original map
+          case HM.lookup l sg of -- Lookup edges
             Nothing -> return sg
             Just rs ->
               foldM
                 ( \sg' -> \case
                     Dom x -> do
-                      sg'' <- go d sg' (Dom x) -- Process successor
+                      sg'' <- go sg' (Dom x) -- Process successor
                       case HM.lookup (Dom x) sg'' of
                         Nothing -> return sg''
                         Just rs' -> return (HM.insertWith HS.union l rs' sg'') -- Add transitive edges
@@ -201,7 +201,7 @@ insert a g Empty = do
 insert a g f@(ID i) = do
   Node t ds <- getNode i
   if hasEdge a t
-    then return f
+    then return f -- a is already unconditionally true
     else do
       let g' = difference g t
       (ds', Any found) <-
@@ -224,8 +224,9 @@ insert a g f@(ID i) = do
         Nothing -> return (delta, f)
         Just ig -> do
           tell (Any True)
-          f' <- lift $ insert a (difference g' ig) f
-          return (ig, f')
+          f' <- lift $ guardWith f (difference delta ig)
+          f'' <- lift $ insert a (difference g' ig) f'
+          return (ig, f'')
 
 -- Iteratively insert every edge in an adjacency map
 insertMany :: GsM m => AdjMap -> AdjMap -> Family -> m Family
@@ -254,6 +255,7 @@ union (Error es) _ = return (Error es)
 union Empty f = return f
 union f f' = go HM.empty f (return f')
   where
+    -- guarded insert every edge of a family into an accumalator
     go _ (Error es) mf =
       mf >>= \case
         Error es' -> return (Error (es ++ es')) -- Add errors to mf
@@ -263,7 +265,7 @@ union f f' = go HM.empty f (return f')
       f <- mf
       Node t ds <- getNode j
       HM.foldrWithKey
-        go
+        (go . overlay delta)
         (insertMany t delta f)
         ds
 
@@ -299,13 +301,13 @@ restrict s = go HM.empty
         Nothing ->
           HM.foldrWithKey
             ( \delta k acc -> do
-                let y = transWith x delta
+                let y = transWith t' delta
                 case unsafeEdges y of
-                  Just _ -> acc
+                  Just es -> acc >>= union (Error es)
                   Nothing -> do
                     k' <- go y k
-                    k'' <- guardWith k' (restrictGraph s y)
+                    k'' <- guardWith k' y
                     acc >>= union k''
             )
-            (fromNode $ Node (restrictGraph s t') HM.empty)
+            (fromNode $ Node t' HM.empty)
             ds

@@ -91,10 +91,10 @@ inferGuts cmd guts@ModGuts {mg_deps = d, mg_module = m, mg_binds = p} = do
   -- bh <- liftIO $ openBinMem 1000
   -- liftIO $ putWithUserData (const $ return ()) bh (M.toList $ M.filterWithKey (\k _ -> isExternalName k) gamma)
   -- liftIO $ writeBinMem bh $ interfaceName $ moduleName m
-  -- stop <- liftIO getCurrentTime
-  -- when ("time" `elem` cmd) $ do
-  --   liftIO $ print $ diffUTCTime stop start
-  --   liftIO $ print (M.size gamma)
+  stop <- liftIO getCurrentTime
+  when ("time" `elem` cmd) $ do
+    liftIO $ print $ diffUTCTime stop start
+    liftIO $ print (M.size gamma)
   return guts
 
 tcIfaceTyCon :: IfaceTyCon -> IfL TyCon
