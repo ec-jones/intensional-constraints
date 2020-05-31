@@ -143,10 +143,10 @@ getVar v =
           return fre_scheme {constraints = Nothing}
         Just var_cg -> do
           g <- asks branchGuard
-          s@InferState {congraph = cg} <- get
-          cg' <- guardWith g var_cg >>= union cg
-          put s {congraph = cg'}
-          return fre_scheme {constraints = Nothing}
+          InferState {congraph = cg} <- get
+          cg' <- guardWith var_cg g >>= union cg
+          modify (\s -> s {congraph = cg'})
+          return fre_scheme {constraints =   Nothing}
     Nothing -> do
       -- Maximise library type
       var_scheme <- fromCoreScheme $ varType v

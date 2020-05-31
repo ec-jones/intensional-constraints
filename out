@@ -1,0 +1,1230 @@
+Build profile: -w ghc-8.8.3 -O1
+In order, the following will be built (use -v for more details):
+ - intensional-constraints-0.1.0.0 (lib) --enable-profiling (file src/Family.hs changed)
+ - intensional-constraints-0.1.0.0 (test:test) --enable-profiling (dependency rebuilt)
+Preprocessing library for intensional-constraints-0.1.0.0..
+Building library for intensional-constraints-0.1.0.0..
+[4 of 9] Compiling Family           ( src/Family.hs, /home/eddie/Documents/intensional/intensional-constraints/dist-newstyle/build/x86_64-linux/ghc-8.8.3/intensional-constraints-0.1.0.0/build/Family.o )
+
+src/Family.hs:37:1: warning: [-Worphans]
+    Orphan instance: instance Outputable AdjMap
+    To avoid this
+        move the instance declaration to the module of the class or of the type, or
+        wrap the type with a newtype and declare the instance on the new type.
+   |
+37 | instance Outputable AdjMap where
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...
+
+src/Family.hs:42:16: warning: [-Wname-shadowing]
+    This binding for ‘to’ shadows the existing binding
+      imported from ‘GHC.Generics’ at src/Family.hs:30:1-19
+   |
+42 |           (k1, to) <- HM.toList sg,
+   |                ^^
+
+src/Family.hs:49:1: warning: [-Worphans]
+    Orphan instance: instance Monad m => Refined Name m
+    To avoid this
+        move the instance declaration to the module of the class or of the type, or
+        wrap the type with a newtype and declare the instance on the new type.
+   |
+49 | instance Monad m => Refined Name m where
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...
+
+src/Family.hs:53:1: warning: [-Worphans]
+    Orphan instance:
+      instance (Eq a, Hashable a, Refined a m) =>
+               Refined (HS.HashSet a) m
+    To avoid this
+        move the instance declaration to the module of the class or of the type, or
+        wrap the type with a newtype and declare the instance on the new type.
+   |
+53 | instance (Eq a, Hashable a, Refined a m) => Refined (HS.HashSet a) m where
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...
+
+src/Family.hs:57:1: warning: [-Worphans]
+    Orphan instance:
+      instance (Eq k, Hashable k, Refined k m, Refined a m) =>
+               Refined (HM.HashMap k a) m
+    To avoid this
+        move the instance declaration to the module of the class or of the type, or
+        wrap the type with a newtype and declare the instance on the new type.
+   |
+57 | instance (Eq k, Hashable k, Refined k m, Refined a m) => Refined (HM.HashMap k a) m where
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...
+
+src/Family.hs:222:19: warning: [-Wname-shadowing]
+    This binding for ‘f’ shadows the existing binding
+      bound at src/Family.hs:201:12
+    |
+222 |     go g' (delta, f) =
+    |                   ^
+
+src/Family.hs:236:19: warning: [-Wname-shadowing]
+    This binding for ‘mf’ shadows the existing binding
+      bound at src/Family.hs:234:13
+    |
+236 |           ( \l lm mf ->
+    |                   ^^
+
+src/Family.hs:238:22: warning: [-Wname-shadowing]
+    This binding for ‘mf’ shadows the existing binding
+      bound at src/Family.hs:236:19
+    |
+238 |                 ( \r mf ->
+    |                      ^^
+
+src/Family.hs:263:7: warning: [-Wname-shadowing]
+    This binding for ‘f’ shadows the existing binding
+      bound at src/Family.hs:255:7
+    |
+263 |       f <- mf
+    |       ^
+[4 of 9] Compiling Family           ( src/Family.hs, /home/eddie/Documents/intensional/intensional-constraints/dist-newstyle/build/x86_64-linux/ghc-8.8.3/intensional-constraints-0.1.0.0/build/Family.p_o )
+
+src/Family.hs:37:1: warning: [-Worphans]
+    Orphan instance: instance Outputable AdjMap
+    To avoid this
+        move the instance declaration to the module of the class or of the type, or
+        wrap the type with a newtype and declare the instance on the new type.
+   |
+37 | instance Outputable AdjMap where
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...
+
+src/Family.hs:42:16: warning: [-Wname-shadowing]
+    This binding for ‘to’ shadows the existing binding
+      imported from ‘GHC.Generics’ at src/Family.hs:30:1-19
+   |
+42 |           (k1, to) <- HM.toList sg,
+   |                ^^
+
+src/Family.hs:49:1: warning: [-Worphans]
+    Orphan instance: instance Monad m => Refined Name m
+    To avoid this
+        move the instance declaration to the module of the class or of the type, or
+        wrap the type with a newtype and declare the instance on the new type.
+   |
+49 | instance Monad m => Refined Name m where
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...
+
+src/Family.hs:53:1: warning: [-Worphans]
+    Orphan instance:
+      instance (Eq a, Hashable a, Refined a m) =>
+               Refined (HS.HashSet a) m
+    To avoid this
+        move the instance declaration to the module of the class or of the type, or
+        wrap the type with a newtype and declare the instance on the new type.
+   |
+53 | instance (Eq a, Hashable a, Refined a m) => Refined (HS.HashSet a) m where
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...
+
+src/Family.hs:57:1: warning: [-Worphans]
+    Orphan instance:
+      instance (Eq k, Hashable k, Refined k m, Refined a m) =>
+               Refined (HM.HashMap k a) m
+    To avoid this
+        move the instance declaration to the module of the class or of the type, or
+        wrap the type with a newtype and declare the instance on the new type.
+   |
+57 | instance (Eq k, Hashable k, Refined k m, Refined a m) => Refined (HM.HashMap k a) m where
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...
+
+src/Family.hs:222:19: warning: [-Wname-shadowing]
+    This binding for ‘f’ shadows the existing binding
+      bound at src/Family.hs:201:12
+    |
+222 |     go g' (delta, f) =
+    |                   ^
+
+src/Family.hs:236:19: warning: [-Wname-shadowing]
+    This binding for ‘mf’ shadows the existing binding
+      bound at src/Family.hs:234:13
+    |
+236 |           ( \l lm mf ->
+    |                   ^^
+
+src/Family.hs:238:22: warning: [-Wname-shadowing]
+    This binding for ‘mf’ shadows the existing binding
+      bound at src/Family.hs:236:19
+    |
+238 |                 ( \r mf ->
+    |                      ^^
+
+src/Family.hs:263:7: warning: [-Wname-shadowing]
+    This binding for ‘f’ shadows the existing binding
+      bound at src/Family.hs:255:7
+    |
+263 |       f <- mf
+    |       ^
+Preprocessing test suite 'test' for intensional-constraints-0.1.0.0..
+Building test suite 'test' for intensional-constraints-0.1.0.0..
+[1 of 1] Compiling SimpleTest       ( test/SimpleTest.hs, /home/eddie/Documents/intensional/intensional-constraints/dist-newstyle/build/x86_64-linux/ghc-8.8.3/intensional-constraints-0.1.0.0/t/test/build/test/test-tmp/SimpleTest.p_o ) [/home/eddie/Documents/intensional/intensional-constraints/dist-newstyle/build/x86_64-linux/ghc-8.8.3/intensional-constraints-0.1.0.0/build/libHSintensional-constraints-0.1.0.0-inplace_p.a changed]
+
+($krep_a15c, forall 131.inj 131 'KindRep where 210)
+
+
+($krep_a15d, forall 162.inj 162 'KindRep where 277)
+
+
+(even, forall 4 5 21 22.inj 4 'Nat -> inj 5 'Bool where 58)
+
+
+(head, forall a.forall 46.inj 46 '[] @a -> a where 85)
+
+
+(hhead, forall a.forall 82.inj 82 '[] @a -> a where 141)
+
+
+(odd, forall 4 5 21 22.inj 21 'Nat -> inj 22 'Bool where 58)
+
+
+(singleton, forall 39.Int -> inj 39 '[] @Int where 73)
+
+
+(tail,
+ forall a.forall 60 61.inj 60 '[] @a -> inj 61 '[] @a where 116)
+
+
+(test1, Int where 86)
+
+
+(test2, Int where 142)
+
+
+(test3, Int where 117)
+
+
+($tc'Succ, forall 186.inj 186 'TyCon where 341)
+
+
+($tc'Zero, forall 144.inj 144 'TyCon where 244)
+
+
+($tcNat, forall 113.inj 113 'TyCon where 164)
+
+
+($trModule, forall 104.inj 104 'Module where 163)
+
+Nodes: (0, Delta:  True >- 'Bool(dom(7)))
+       (1, Delta:  (Zero >- 'Nat(dom(4)), 0))
+       (2, Delta:  'Bool(dom(7)) >- 'Bool(dom(5)))
+       (3, Delta:  True >- 'Bool(dom(7)) (, 2))
+       (4, Delta:  (Zero >- 'Nat(dom(4)), 3))
+       (5, Delta:  Nat(dom(4)) >- Nat(dom(10)))
+       (6,
+        Delta:  (Succ >- 'Nat(dom(4)), 5)
+                (Zero >- 'Nat(dom(4)), 3))
+       (7, Delta:  Nat(dom(10)) >- Nat(dom(2)))
+       (8, Delta:  Nat(dom(4)) >- Nat(dom(10)) (, 7))
+       (9,
+        Delta:  (Succ >- 'Nat(dom(4)), 8)
+                (Zero >- 'Nat(dom(4)), 3))
+       (10,
+        Delta:  Nat(dom(4)) >- Nat(dom(10)) (, 7)
+                                            (Succ >- Nat(dom(10)), 7))
+       (11,
+        Delta:  (Succ >- 'Nat(dom(4)), 10)
+                (Zero >- 'Nat(dom(4)), 3))
+       (12, Delta:  'Bool(dom(3)) >- 'Bool(dom(5)))
+       (13,
+        Delta:  Nat(dom(4)) >- Nat(dom(10)) (, 12)
+                                            (Succ >- Nat(dom(10)), 7))
+       (14,
+        Delta:  (Succ >- 'Nat(dom(4)), 13)
+                (Zero >- 'Nat(dom(4)), 3))
+       (15, Delta:  'Nat(dom(4)) >- Succ | Zero)
+       (16,
+        Delta:  (Succ >- 'Nat(dom(4)), 13)
+                (, 15)
+                (Zero >- 'Nat(dom(4)), 3))
+       (17, Delta:  'Nat(dom(0)) >- 'Nat(dom(4)))
+       (18,
+        Delta:  (Succ >- 'Nat(dom(4)), 13)
+                (, 17)
+                (Zero >- 'Nat(dom(4)), 3))
+       (19, Delta:  Nat(dom(0)) >- Nat(dom(4)))
+       (20,
+        Delta:  (Succ >- 'Nat(dom(4)), 13)
+                (, 17)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (21, Delta:  'Bool(dom(5)) >- 'Bool(dom(1)))
+       (22,
+        Delta:  (Succ >- 'Nat(dom(4)), 13)
+                (, 21)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (23, Delta:  False >- 'Bool(dom(24)))
+       (24,
+        Delta:  (Zero >- 'Nat(dom(21)), 23)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 21)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (25, Delta:  'Bool(dom(24)) >- 'Bool(dom(22)))
+       (26, Delta:  False >- 'Bool(dom(24)) (, 25))
+       (27,
+        Delta:  (Zero >- 'Nat(dom(21)), 26)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 21)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (28, Delta:  Nat(dom(21)) >- Nat(dom(27)))
+       (29,
+        Delta:  (Zero >- 'Nat(dom(21)), 26)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 21)
+                (Succ >- 'Nat(dom(21)), 28)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (30, Delta:  Nat(dom(27)) >- Nat(dom(0)))
+       (31, Delta:  Nat(dom(21)) >- Nat(dom(27)) (, 30))
+       (32,
+        Delta:  (Zero >- 'Nat(dom(21)), 26)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 21)
+                (Succ >- 'Nat(dom(21)), 31)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (33,
+        Delta:  Nat(dom(21)) >- Nat(dom(27)) (, 30)
+                                             (Succ >- Nat(dom(27)), 30))
+       (34,
+        Delta:  (Zero >- 'Nat(dom(21)), 26)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 21)
+                (Succ >- 'Nat(dom(21)), 33)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (35, Delta:  'Bool(dom(1)) >- 'Bool(dom(22)))
+       (36,
+        Delta:  Nat(dom(21)) >- Nat(dom(27)) (, 35)
+                                             (Succ >- Nat(dom(27)), 30))
+       (37,
+        Delta:  (Zero >- 'Nat(dom(21)), 26)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 21)
+                (Succ >- 'Nat(dom(21)), 36)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (38, Delta:  'Nat(dom(21)) >- Succ | Zero)
+       (39,
+        Delta:  (Zero >- 'Nat(dom(21)), 26)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 38)
+                (Succ >- 'Nat(dom(21)), 36)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (40, Delta:  'Nat(dom(2)) >- 'Nat(dom(21)))
+       (41,
+        Delta:  (Zero >- 'Nat(dom(21)), 26)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 40)
+                (Succ >- 'Nat(dom(21)), 36)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (42, Delta:  Nat(dom(2)) >- Nat(dom(21)))
+       (43,
+        Delta:  (Succ >- 'Nat(dom(2)), 42)
+                (Zero >- 'Nat(dom(21)), 26)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 40)
+                (Succ >- 'Nat(dom(21)), 36)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (44, Delta:  'Bool(dom(22)) >- 'Bool(dom(3)))
+       (45,
+        Delta:  (Succ >- 'Nat(dom(2)), 42)
+                (Zero >- 'Nat(dom(21)), 26)
+                (Succ >- 'Nat(dom(4)), 13)
+                (, 44)
+                (Succ >- 'Nat(dom(21)), 36)
+                (Zero >- 'Nat(dom(4)), 3)
+                (Succ >- 'Nat(dom(0)), 19))
+       (46, Delta: )
+       (47, Delta:  Zero >- 'Nat(dom(21)))
+       (48, Delta:  Zero >- 'Nat(dom(21)))
+       (49, Delta:  Succ >- 'Nat(dom(4)))
+       (50, Delta:  Succ >- 'Nat(dom(4)))
+       (51, Delta:  Succ >- 'Nat(dom(4)))
+       (52, Delta: )
+       (53, Delta:  Succ >- 'Nat(dom(21)))
+       (54, Delta:  Succ >- 'Nat(dom(21)))
+       (55, Delta:  Succ >- 'Nat(dom(21)))
+       (56, Delta:  Zero >- 'Nat(dom(4)))
+       (57, Delta:  Zero >- 'Nat(dom(4)))
+       (58, Delta: )
+       (59, Delta:  : >- '[](dom(39)))
+       (60, Delta:  (, 59))
+       (61, Delta:  [] >- '[](dom(40)))
+       (62, Delta:  (, 61))
+       (63, Delta:  [](dom(40)) >- [](dom(39)))
+       (64, Delta:  (, 63))
+       (65,
+        Delta:  (, 63)
+                (: >- '[](dom(40)), 63))
+       (66, Delta:  '[](dom(39)) >- '[](dom(38)))
+       (67,
+        Delta:  (, 66)
+                (: >- '[](dom(40)), 63))
+       (68, Delta:  [](dom(39)) >- [](dom(38)))
+       (69,
+        Delta:  (, 66)
+                (: >- '[](dom(40)), 63)
+                (: >- '[](dom(39)), 68))
+       (70, Delta: )
+       (71, Delta: )
+       (72, Delta:  : >- '[](dom(39)))
+       (73, Delta: )
+       (74, Delta:  [](dom(46)) >- [](dom(47)))
+       (75, Delta:  (: >- '[](dom(46)), 74))
+       (76, Delta:  '[](dom(46)) >- :)
+       (77,
+        Delta:  (: >- '[](dom(46)), 74)
+                (, 76))
+       (78, Delta:  '[](dom(45)) >- '[](dom(46)))
+       (79,
+        Delta:  (: >- '[](dom(46)), 74)
+                (, 78))
+       (80, Delta:  [](dom(45)) >- [](dom(46)))
+       (81,
+        Delta:  (: >- '[](dom(46)), 74)
+                (, 78)
+                (: >- '[](dom(45)), 80))
+       (82, Delta:  : >- '[](dom(46)))
+       (83, Delta: )
+       (84, Delta: )
+       (85, Delta: )
+       (86, Delta: )
+       (87, Delta:  '[](dom(53)) >- '[](dom(52)))
+       (88, Delta:  (, 87))
+       (89, Delta:  [](dom(53)) >- [](dom(52)))
+       (90,
+        Delta:  (, 87)
+                (: >- '[](dom(53)), 89))
+       (91, Delta: )
+       (92, Delta: )
+       (93, Delta:  [](dom(60)) >- [](dom(62)))
+       (94, Delta:  (: >- '[](dom(60)), 93))
+       (95, Delta:  [](dom(62)) >- [](dom(61)))
+       (96, Delta:  [](dom(60)) >- [](dom(62)) (, 95))
+       (97, Delta:  (: >- '[](dom(60)), 96))
+       (98,
+        Delta:  [](dom(60)) >- [](dom(62)) (: >- [](dom(62)), 95)
+                                           (, 95))
+       (99, Delta:  (: >- '[](dom(60)), 98))
+       (100, Delta:  '[](dom(60)) >- :)
+       (101,
+        Delta:  (, 100)
+                (: >- '[](dom(60)), 98))
+       (102, Delta:  '[](dom(58)) >- '[](dom(60)))
+       (103,
+        Delta:  (, 102)
+                (: >- '[](dom(60)), 98))
+       (104, Delta:  [](dom(58)) >- [](dom(60)))
+       (105,
+        Delta:  (, 102)
+                (: >- '[](dom(60)), 98)
+                (: >- '[](dom(58)), 104))
+       (106, Delta:  '[](dom(61)) >- '[](dom(59)))
+       (107,
+        Delta:  (, 106)
+                (: >- '[](dom(60)), 98)
+                (: >- '[](dom(58)), 104))
+       (108, Delta:  [](dom(61)) >- [](dom(59)))
+       (109,
+        Delta:  (, 106)
+                (: >- '[](dom(61)), 108)
+                (: >- '[](dom(60)), 98)
+                (: >- '[](dom(58)), 104))
+       (110, Delta: )
+       (111, Delta:  : >- '[](dom(61)))
+       (112, Delta:  : >- '[](dom(60)))
+       (113, Delta:  : >- '[](dom(60)))
+       (114, Delta:  : >- '[](dom(60)))
+       (115, Delta: )
+       (116, Delta: )
+       (117, Delta: )
+       (118, Delta:  '[](dom(74)) >- '[](dom(72)))
+       (119, Delta:  (, 118))
+       (120, Delta:  [](dom(74)) >- [](dom(72)))
+       (121,
+        Delta:  (, 118)
+                (: >- '[](dom(74)), 120))
+       (122, Delta:  '[](dom(73)) >- '[](dom(71)))
+       (123,
+        Delta:  (, 122)
+                (: >- '[](dom(74)), 120))
+       (124, Delta:  [](dom(73)) >- [](dom(71)))
+       (125,
+        Delta:  (: >- '[](dom(73)), 124)
+                (, 122)
+                (: >- '[](dom(74)), 120))
+       (126, Delta: )
+       (127, Delta: )
+       (128, Delta:  [](dom(82)) >- [](dom(88)))
+       (129, Delta:  (: >- '[](dom(82)), 128))
+       (130, Delta:  [](dom(88)) >- [](dom(91)))
+       (131, Delta:  [](dom(82)) >- [](dom(88)) (: >- [](dom(88)), 130))
+       (132, Delta:  (: >- '[](dom(82)), 131))
+       (133, Delta:  '[](dom(81)) >- '[](dom(82)))
+       (134,
+        Delta:  (, 133)
+                (: >- '[](dom(82)), 131))
+       (135, Delta:  [](dom(81)) >- [](dom(82)))
+       (136,
+        Delta:  (, 133)
+                (: >- '[](dom(82)), 131)
+                (: >- '[](dom(81)), 135))
+       (137, Delta: )
+       (138, Delta:  : >- '[](dom(82)))
+       (139, Delta:  : >- '[](dom(82)))
+       (140, Delta: )
+       (141, Delta: )
+       (142, Delta: )
+       (143, Delta:  '[](dom(99)) >- '[](dom(98)))
+       (144, Delta:  (, 143))
+       (145, Delta:  [](dom(99)) >- [](dom(98)))
+       (146,
+        Delta:  (, 143)
+                (: >- '[](dom(99)), 145))
+       (147, Delta: )
+       (148, Delta: )
+       (149, Delta:  TrNameS >- 'TrName(dom(105)))
+       (150, Delta:  (, 149))
+       (151, Delta:  'TrName(dom(105)) >- 'TrName(dom(104)))
+       (152, Delta:  (, 151))
+       (153, Delta:  '[](dom(105)) >- '[](dom(104)))
+       (154,
+        Delta:  (, 151)
+                (TrNameD >- 'TrName(dom(105)), 153))
+       (155, Delta:  TrNameS >- 'TrName(dom(109)))
+       (156,
+        Delta:  (, 155)
+                (TrNameD >- 'TrName(dom(105)), 153))
+       (157, Delta:  'TrName(dom(109)) >- 'TrName(dom(104)))
+       (158,
+        Delta:  (, 157)
+                (TrNameD >- 'TrName(dom(105)), 153))
+       (159, Delta:  '[](dom(109)) >- '[](dom(104)))
+       (160,
+        Delta:  (TrNameD >- 'TrName(dom(109)), 159)
+                (, 157)
+                (TrNameD >- 'TrName(dom(105)), 153))
+       (161, Delta: )
+       (162, Delta: )
+       (163, Delta: )
+       (164, Delta: )
+       (165, Delta:  TrNameS >- 'TrName(dom(117)))
+       (166, Delta:  (, 165))
+       (167, Delta:  'TrName(dom(117)) >- 'TrName(dom(113)))
+       (168, Delta:  (, 167))
+       (169, Delta:  '[](dom(117)) >- '[](dom(113)))
+       (170,
+        Delta:  (, 167)
+                (TrNameD >- 'TrName(dom(117)), 169))
+       (171, Delta:  KindRepTyConApp >- 'KindRep(dom(122)))
+       (172,
+        Delta:  (, 171)
+                (TrNameD >- 'TrName(dom(117)), 169))
+       (173, Delta:  KindRepVar >- 'KindRep(dom(122)))
+       (174,
+        Delta:  (, 173)
+                (TrNameD >- 'TrName(dom(117)), 169))
+       (175, Delta:  KindRepApp >- 'KindRep(dom(122)))
+       (176,
+        Delta:  (, 175)
+                (TrNameD >- 'TrName(dom(117)), 169))
+       (177, Delta:  KindRepFun >- 'KindRep(dom(122)))
+       (178,
+        Delta:  (, 177)
+                (TrNameD >- 'TrName(dom(117)), 169))
+       (179, Delta:  KindRepTYPE >- 'KindRep(dom(122)))
+       (180,
+        Delta:  (, 179)
+                (TrNameD >- 'TrName(dom(117)), 169))
+       (181, Delta:  KindRepTypeLitS >- 'KindRep(dom(122)))
+       (182,
+        Delta:  (, 181)
+                (TrNameD >- 'TrName(dom(117)), 169))
+       (183, Delta:  KindRepTypeLitD >- 'KindRep(dom(122)))
+       (184,
+        Delta:  (, 183)
+                (TrNameD >- 'TrName(dom(117)), 169))
+       (185, Delta:  'KindRep(dom(122)) >- 'KindRep(dom(113)))
+       (186,
+        Delta:  (, 185)
+                (TrNameD >- 'TrName(dom(117)), 169))
+       (187, Delta:  '[](dom(122)) >- '[](dom(113)))
+       (188,
+        Delta:  (, 185)
+                (TrNameD >- 'TrName(dom(117)), 169)
+                (KindRepTyConApp >- 'KindRep(dom(122)), 187))
+       (189, Delta:  KindRep(dom(122)) >- KindRep(dom(113)))
+       (190,
+        Delta:  (KindRepApp >- 'KindRep(dom(122)), 189)
+                (, 185)
+                (TrNameD >- 'TrName(dom(117)), 169)
+                (KindRepTyConApp >- 'KindRep(dom(122)), 187))
+       (191,
+        Delta:  (KindRepApp >- 'KindRep(dom(122)), 189)
+                (, 185)
+                (TrNameD >- 'TrName(dom(117)), 169)
+                (KindRepFun >- 'KindRep(dom(122)), 189)
+                (KindRepTyConApp >- 'KindRep(dom(122)), 187))
+       (192, Delta:  'RuntimeRep(dom(122)) >- 'RuntimeRep(dom(113)))
+       (193,
+        Delta:  (KindRepTYPE >- 'KindRep(dom(122)), 192)
+                (KindRepApp >- 'KindRep(dom(122)), 189)
+                (, 185)
+                (TrNameD >- 'TrName(dom(117)), 169)
+                (KindRepFun >- 'KindRep(dom(122)), 189)
+                (KindRepTyConApp >- 'KindRep(dom(122)), 187))
+       (194, Delta:  'TypeLitSort(dom(122)) >- 'TypeLitSort(dom(113)))
+       (195,
+        Delta:  (KindRepTYPE >- 'KindRep(dom(122)), 192)
+                (KindRepTypeLitS >- 'KindRep(dom(122)), 194)
+                (KindRepApp >- 'KindRep(dom(122)), 189)
+                (, 185)
+                (TrNameD >- 'TrName(dom(117)), 169)
+                (KindRepFun >- 'KindRep(dom(122)), 189)
+                (KindRepTyConApp >- 'KindRep(dom(122)), 187))
+       (196,
+        Delta:  (KindRepTYPE >- 'KindRep(dom(122)), 192)
+                (KindRepTypeLitS >- 'KindRep(dom(122)), 194)
+                (KindRepApp >- 'KindRep(dom(122)), 189)
+                (, 185)
+                (KindRepTypeLitD >- 'KindRep(dom(122)), 194)
+                (TrNameD >- 'TrName(dom(117)), 169)
+                (KindRepFun >- 'KindRep(dom(122)), 189)
+                (KindRepTyConApp >- 'KindRep(dom(122)), 187))
+       (197,
+        Delta:  'TypeLitSort(dom(122)) >- 'TypeLitSort(dom(113)) (, 187))
+       (198,
+        Delta:  (KindRepTYPE >- 'KindRep(dom(122)), 192)
+                (KindRepTypeLitS >- 'KindRep(dom(122)), 194)
+                (KindRepApp >- 'KindRep(dom(122)), 189)
+                (, 185)
+                (KindRepTypeLitD >- 'KindRep(dom(122)), 197)
+                (TrNameD >- 'TrName(dom(117)), 169)
+                (KindRepFun >- 'KindRep(dom(122)), 189)
+                (KindRepTyConApp >- 'KindRep(dom(122)), 187))
+       (199, Delta: )
+       (200, Delta: )
+       (201, Delta: )
+       (202, Delta: )
+       (203, Delta: )
+       (204, Delta: )
+       (205, Delta: )
+       (206, Delta: )
+       (207, Delta: )
+       (208, Delta:  KindRepTyConApp >- 'KindRep(dom(131)))
+       (209, Delta:  (, 208))
+       (210, Delta: )
+       (211, Delta:  [] >- '[](dom(134)))
+       (212, Delta:  (, 211))
+       (213, Delta:  '[](dom(134)) >- '[](dom(131)))
+       (214, Delta:  (, 213))
+       (215, Delta:  'KindRep(dom(134)) >- 'KindRep(dom(131)))
+       (216,
+        Delta:  (, 213)
+                (: >- '[](dom(134)), 215))
+       (217, Delta:  [](dom(134)) >- [](dom(131)))
+       (218, Delta:  'KindRep(dom(134)) >- 'KindRep(dom(131)) (, 217))
+       (219,
+        Delta:  (, 213)
+                (: >- '[](dom(134)), 218))
+       (220, Delta:  'KindRep(dom(131)) >- 'KindRep(dom(130)))
+       (221,
+        Delta:  (, 220)
+                (: >- '[](dom(134)), 218))
+       (222, Delta:  '[](dom(131)) >- '[](dom(130)))
+       (223,
+        Delta:  (, 220)
+                (KindRepTyConApp >- 'KindRep(dom(131)), 222)
+                (: >- '[](dom(134)), 218))
+       (224, Delta:  KindRep(dom(131)) >- KindRep(dom(130)))
+       (225,
+        Delta:  (, 220)
+                (KindRepTyConApp >- 'KindRep(dom(131)), 222)
+                (: >- '[](dom(134)), 218)
+                (KindRepApp >- 'KindRep(dom(131)), 224))
+       (226,
+        Delta:  (KindRepFun >- 'KindRep(dom(131)), 224)
+                (, 220)
+                (KindRepTyConApp >- 'KindRep(dom(131)), 222)
+                (: >- '[](dom(134)), 218)
+                (KindRepApp >- 'KindRep(dom(131)), 224))
+       (227, Delta:  'RuntimeRep(dom(131)) >- 'RuntimeRep(dom(130)))
+       (228,
+        Delta:  (KindRepFun >- 'KindRep(dom(131)), 224)
+                (, 220)
+                (KindRepTyConApp >- 'KindRep(dom(131)), 222)
+                (KindRepTYPE >- 'KindRep(dom(131)), 227)
+                (: >- '[](dom(134)), 218)
+                (KindRepApp >- 'KindRep(dom(131)), 224))
+       (229, Delta:  'TypeLitSort(dom(131)) >- 'TypeLitSort(dom(130)))
+       (230,
+        Delta:  (KindRepFun >- 'KindRep(dom(131)), 224)
+                (, 220)
+                (KindRepTypeLitS >- 'KindRep(dom(131)), 229)
+                (KindRepTyConApp >- 'KindRep(dom(131)), 222)
+                (KindRepTYPE >- 'KindRep(dom(131)), 227)
+                (: >- '[](dom(134)), 218)
+                (KindRepApp >- 'KindRep(dom(131)), 224))
+       (231,
+        Delta:  (KindRepFun >- 'KindRep(dom(131)), 224)
+                (KindRepTypeLitD >- 'KindRep(dom(131)), 229)
+                (, 220)
+                (KindRepTypeLitS >- 'KindRep(dom(131)), 229)
+                (KindRepTyConApp >- 'KindRep(dom(131)), 222)
+                (KindRepTYPE >- 'KindRep(dom(131)), 227)
+                (: >- '[](dom(134)), 218)
+                (KindRepApp >- 'KindRep(dom(131)), 224))
+       (232,
+        Delta:  'TypeLitSort(dom(131)) >- 'TypeLitSort(dom(130)) (, 222))
+       (233,
+        Delta:  (KindRepFun >- 'KindRep(dom(131)), 224)
+                (KindRepTypeLitD >- 'KindRep(dom(131)), 232)
+                (, 220)
+                (KindRepTypeLitS >- 'KindRep(dom(131)), 229)
+                (KindRepTyConApp >- 'KindRep(dom(131)), 222)
+                (KindRepTYPE >- 'KindRep(dom(131)), 227)
+                (: >- '[](dom(134)), 218)
+                (KindRepApp >- 'KindRep(dom(131)), 224))
+       (234, Delta:  KindRepFun >- 'KindRep(dom(131)))
+       (235, Delta:  KindRepTypeLitD >- 'KindRep(dom(131)))
+       (236, Delta:  KindRepTypeLitD >- 'KindRep(dom(131)))
+       (237, Delta: )
+       (238, Delta:  KindRepTypeLitS >- 'KindRep(dom(131)))
+       (239, Delta:  KindRepTyConApp >- 'KindRep(dom(131)))
+       (240, Delta:  KindRepTYPE >- 'KindRep(dom(131)))
+       (241, Delta: )
+       (242, Delta: )
+       (243, Delta:  KindRepApp >- 'KindRep(dom(131)))
+       (244, Delta: )
+       (245, Delta:  TrNameS >- 'TrName(dom(148)))
+       (246, Delta:  (, 245))
+       (247, Delta:  'TrName(dom(148)) >- 'TrName(dom(144)))
+       (248, Delta:  (, 247))
+       (249, Delta:  '[](dom(148)) >- '[](dom(144)))
+       (250,
+        Delta:  (, 247)
+                (TrNameD >- 'TrName(dom(148)), 249))
+       (251, Delta:  (TrNameD >- 'TrName(dom(148)), 249))
+       (252, Delta:  'KindRep(dom(153)) >- 'KindRep(dom(144)))
+       (253,
+        Delta:  (, 252)
+                (TrNameD >- 'TrName(dom(148)), 249))
+       (254, Delta:  '[](dom(153)) >- '[](dom(144)))
+       (255,
+        Delta:  (, 252)
+                (KindRepTyConApp >- 'KindRep(dom(153)), 254)
+                (TrNameD >- 'TrName(dom(148)), 249))
+       (256, Delta:  KindRep(dom(153)) >- KindRep(dom(144)))
+       (257,
+        Delta:  (, 252)
+                (KindRepTyConApp >- 'KindRep(dom(153)), 254)
+                (TrNameD >- 'TrName(dom(148)), 249)
+                (KindRepApp >- 'KindRep(dom(153)), 256))
+       (258,
+        Delta:  (, 252)
+                (KindRepTyConApp >- 'KindRep(dom(153)), 254)
+                (TrNameD >- 'TrName(dom(148)), 249)
+                (KindRepFun >- 'KindRep(dom(153)), 256)
+                (KindRepApp >- 'KindRep(dom(153)), 256))
+       (259, Delta:  'RuntimeRep(dom(153)) >- 'RuntimeRep(dom(144)))
+       (260,
+        Delta:  (, 252)
+                (KindRepTyConApp >- 'KindRep(dom(153)), 254)
+                (KindRepTYPE >- 'KindRep(dom(153)), 259)
+                (TrNameD >- 'TrName(dom(148)), 249)
+                (KindRepFun >- 'KindRep(dom(153)), 256)
+                (KindRepApp >- 'KindRep(dom(153)), 256))
+       (261, Delta:  'TypeLitSort(dom(153)) >- 'TypeLitSort(dom(144)))
+       (262,
+        Delta:  (, 252)
+                (KindRepTyConApp >- 'KindRep(dom(153)), 254)
+                (KindRepTypeLitS >- 'KindRep(dom(153)), 261)
+                (KindRepTYPE >- 'KindRep(dom(153)), 259)
+                (TrNameD >- 'TrName(dom(148)), 249)
+                (KindRepFun >- 'KindRep(dom(153)), 256)
+                (KindRepApp >- 'KindRep(dom(153)), 256))
+       (263,
+        Delta:  (KindRepTypeLitD >- 'KindRep(dom(153)), 261)
+                (, 252)
+                (KindRepTyConApp >- 'KindRep(dom(153)), 254)
+                (KindRepTypeLitS >- 'KindRep(dom(153)), 261)
+                (KindRepTYPE >- 'KindRep(dom(153)), 259)
+                (TrNameD >- 'TrName(dom(148)), 249)
+                (KindRepFun >- 'KindRep(dom(153)), 256)
+                (KindRepApp >- 'KindRep(dom(153)), 256))
+       (264,
+        Delta:  'TypeLitSort(dom(153)) >- 'TypeLitSort(dom(144)) (, 254))
+       (265,
+        Delta:  (KindRepTypeLitD >- 'KindRep(dom(153)), 264)
+                (, 252)
+                (KindRepTyConApp >- 'KindRep(dom(153)), 254)
+                (KindRepTypeLitS >- 'KindRep(dom(153)), 261)
+                (KindRepTYPE >- 'KindRep(dom(153)), 259)
+                (TrNameD >- 'TrName(dom(148)), 249)
+                (KindRepFun >- 'KindRep(dom(153)), 256)
+                (KindRepApp >- 'KindRep(dom(153)), 256))
+       (266, Delta: )
+       (267, Delta: )
+       (268, Delta: )
+       (269, Delta: )
+       (270, Delta: )
+       (271, Delta: )
+       (272, Delta: )
+       (273, Delta: )
+       (274, Delta: )
+       (275, Delta:  KindRepFun >- 'KindRep(dom(162)))
+       (276, Delta:  (, 275))
+       (277, Delta: )
+       (278, Delta:  KindRep(dom(163)) >- KindRep(dom(162)))
+       (279, Delta:  (, 278))
+       (280, Delta:  '[](dom(163)) >- '[](dom(162)))
+       (281,
+        Delta:  (, 278)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280))
+       (282,
+        Delta:  (, 278)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (283,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (, 278)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (284, Delta:  'RuntimeRep(dom(163)) >- 'RuntimeRep(dom(162)))
+       (285,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (, 278)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (286, Delta:  'TypeLitSort(dom(163)) >- 'TypeLitSort(dom(162)))
+       (287,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (, 278)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (288,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (, 278)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (289,
+        Delta:  'TypeLitSort(dom(163)) >- 'TypeLitSort(dom(162)) (, 280))
+       (290,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 289)
+                (, 278)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (291, Delta:  (KindRepApp >- 'KindRep(dom(163)), 278))
+       (292,
+        Delta:  (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (293,
+        Delta:  (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (294,
+        Delta:  (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (295,
+        Delta:  (, 278)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (296,
+        Delta:  (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (, 278)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (297,
+        Delta:  (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (, 278)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (298,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (, 278)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (299, Delta:  KindRep(dom(171)) >- KindRep(dom(162)))
+       (300,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (, 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278))
+       (301, Delta:  '[](dom(171)) >- '[](dom(162)))
+       (302,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (, 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (303,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (, 299)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (304,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (, 299)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (305, Delta:  'RuntimeRep(dom(171)) >- 'RuntimeRep(dom(162)))
+       (306,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (, 299)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (307, Delta:  'TypeLitSort(dom(171)) >- 'TypeLitSort(dom(162)))
+       (308,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (, 299)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (309,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (, 299)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 307)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (310,
+        Delta:  'TypeLitSort(dom(171)) >- 'TypeLitSort(dom(162)) (, 301))
+       (311,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (, 299)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 310)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (312, Delta:  'KindRep(dom(162)) >- 'KindRep(dom(161)))
+       (313,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (, 312)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 310)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (314, Delta:  '[](dom(162)) >- '[](dom(161)))
+       (315,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (KindRepTyConApp >- 'KindRep(dom(162)), 314)
+                (, 312)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 310)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (316, Delta:  KindRep(dom(162)) >- KindRep(dom(161)))
+       (317,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (KindRepTyConApp >- 'KindRep(dom(162)), 314)
+                (, 312)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 310)
+                (KindRepApp >- 'KindRep(dom(162)), 316)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (318,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (KindRepFun >- 'KindRep(dom(162)), 316)
+                (KindRepTyConApp >- 'KindRep(dom(162)), 314)
+                (, 312)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 310)
+                (KindRepApp >- 'KindRep(dom(162)), 316)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (319, Delta:  'RuntimeRep(dom(162)) >- 'RuntimeRep(dom(161)))
+       (320,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (KindRepFun >- 'KindRep(dom(162)), 316)
+                (KindRepTyConApp >- 'KindRep(dom(162)), 314)
+                (, 312)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(162)), 319)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 310)
+                (KindRepApp >- 'KindRep(dom(162)), 316)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (321, Delta:  'TypeLitSort(dom(162)) >- 'TypeLitSort(dom(161)))
+       (322,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (KindRepFun >- 'KindRep(dom(162)), 316)
+                (KindRepTyConApp >- 'KindRep(dom(162)), 314)
+                (, 312)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(162)), 319)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 310)
+                (KindRepTypeLitS >- 'KindRep(dom(162)), 321)
+                (KindRepApp >- 'KindRep(dom(162)), 316)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (323,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (KindRepFun >- 'KindRep(dom(162)), 316)
+                (KindRepTyConApp >- 'KindRep(dom(162)), 314)
+                (, 312)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(162)), 319)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 310)
+                (KindRepTypeLitS >- 'KindRep(dom(162)), 321)
+                (KindRepApp >- 'KindRep(dom(162)), 316)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(162)), 321)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (324,
+        Delta:  'TypeLitSort(dom(162)) >- 'TypeLitSort(dom(161)) (, 314))
+       (325,
+        Delta:  (KindRepFun >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(163)), 286)
+                (KindRepTYPE >- 'KindRep(dom(171)), 305)
+                (KindRepFun >- 'KindRep(dom(162)), 316)
+                (KindRepTyConApp >- 'KindRep(dom(162)), 314)
+                (, 312)
+                (KindRepApp >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitS >- 'KindRep(dom(163)), 286)
+                (KindRepTyConApp >- 'KindRep(dom(163)), 280)
+                (KindRepTYPE >- 'KindRep(dom(162)), 319)
+                (, 280)
+                (KindRepFun >- 'KindRep(dom(171)), 299)
+                (KindRepTypeLitD >- 'KindRep(dom(171)), 310)
+                (KindRepTypeLitS >- 'KindRep(dom(162)), 321)
+                (KindRepApp >- 'KindRep(dom(162)), 316)
+                (KindRepTYPE >- 'KindRep(dom(163)), 284)
+                (KindRepApp >- 'KindRep(dom(163)), 278)
+                (KindRepTypeLitD >- 'KindRep(dom(162)), 324)
+                (KindRepTypeLitS >- 'KindRep(dom(171)), 307)
+                (KindRepTyConApp >- 'KindRep(dom(171)), 301))
+       (326, Delta: )
+       (327, Delta: )
+       (328, Delta: )
+       (329, Delta:  KindRepFun >- 'KindRep(dom(162)))
+       (330, Delta:  KindRepTyConApp >- 'KindRep(dom(162)))
+       (331, Delta: )
+       (332, Delta: )
+       (333, Delta: )
+       (334, Delta: )
+       (335, Delta:  KindRepTYPE >- 'KindRep(dom(162)))
+       (336, Delta: )
+       (337, Delta:  KindRepTypeLitS >- 'KindRep(dom(162)))
+       (338, Delta:  KindRepApp >- 'KindRep(dom(162)))
+       (339, Delta:  KindRepTypeLitD >- 'KindRep(dom(162)))
+       (340, Delta:  KindRepTypeLitD >- 'KindRep(dom(162)))
+       (341, Delta: )
+       (342, Delta:  TrNameS >- 'TrName(dom(190)))
+       (343, Delta:  (, 342))
+       (344, Delta:  'TrName(dom(190)) >- 'TrName(dom(186)))
+       (345, Delta:  (, 344))
+       (346, Delta:  '[](dom(190)) >- '[](dom(186)))
+       (347,
+        Delta:  (, 344)
+                (TrNameD >- 'TrName(dom(190)), 346))
+       (348, Delta:  (TrNameD >- 'TrName(dom(190)), 346))
+       (349, Delta:  'KindRep(dom(195)) >- 'KindRep(dom(186)))
+       (350,
+        Delta:  (, 349)
+                (TrNameD >- 'TrName(dom(190)), 346))
+       (351, Delta:  '[](dom(195)) >- '[](dom(186)))
+       (352,
+        Delta:  (, 349)
+                (KindRepTyConApp >- 'KindRep(dom(195)), 351)
+                (TrNameD >- 'TrName(dom(190)), 346))
+       (353, Delta:  KindRep(dom(195)) >- KindRep(dom(186)))
+       (354,
+        Delta:  (, 349)
+                (KindRepTyConApp >- 'KindRep(dom(195)), 351)
+                (KindRepApp >- 'KindRep(dom(195)), 353)
+                (TrNameD >- 'TrName(dom(190)), 346))
+       (355,
+        Delta:  (KindRepFun >- 'KindRep(dom(195)), 353)
+                (, 349)
+                (KindRepTyConApp >- 'KindRep(dom(195)), 351)
+                (KindRepApp >- 'KindRep(dom(195)), 353)
+                (TrNameD >- 'TrName(dom(190)), 346))
+       (356, Delta:  'RuntimeRep(dom(195)) >- 'RuntimeRep(dom(186)))
+       (357,
+        Delta:  (KindRepFun >- 'KindRep(dom(195)), 353)
+                (, 349)
+                (KindRepTyConApp >- 'KindRep(dom(195)), 351)
+                (KindRepTYPE >- 'KindRep(dom(195)), 356)
+                (KindRepApp >- 'KindRep(dom(195)), 353)
+                (TrNameD >- 'TrName(dom(190)), 346))
+       (358, Delta:  'TypeLitSort(dom(195)) >- 'TypeLitSort(dom(186)))
+       (359,
+        Delta:  (KindRepFun >- 'KindRep(dom(195)), 353)
+                (, 349)
+                (KindRepTypeLitS >- 'KindRep(dom(195)), 358)
+                (KindRepTyConApp >- 'KindRep(dom(195)), 351)
+                (KindRepTYPE >- 'KindRep(dom(195)), 356)
+                (KindRepApp >- 'KindRep(dom(195)), 353)
+                (TrNameD >- 'TrName(dom(190)), 346))
+       (360,
+        Delta:  (KindRepFun >- 'KindRep(dom(195)), 353)
+                (KindRepTypeLitD >- 'KindRep(dom(195)), 358)
+                (, 349)
+                (KindRepTypeLitS >- 'KindRep(dom(195)), 358)
+                (KindRepTyConApp >- 'KindRep(dom(195)), 351)
+                (KindRepTYPE >- 'KindRep(dom(195)), 356)
+                (KindRepApp >- 'KindRep(dom(195)), 353)
+                (TrNameD >- 'TrName(dom(190)), 346))
+       (361,
+        Delta:  'TypeLitSort(dom(195)) >- 'TypeLitSort(dom(186)) (, 351))
+       (362,
+        Delta:  (KindRepFun >- 'KindRep(dom(195)), 353)
+                (KindRepTypeLitD >- 'KindRep(dom(195)), 361)
+                (, 349)
+                (KindRepTypeLitS >- 'KindRep(dom(195)), 358)
+                (KindRepTyConApp >- 'KindRep(dom(195)), 351)
+                (KindRepTYPE >- 'KindRep(dom(195)), 356)
+                (KindRepApp >- 'KindRep(dom(195)), 353)
+                (TrNameD >- 'TrName(dom(190)), 346))
+       (363, Delta: )
+       (364, Delta: )
+       (365, Delta: )
+       (366, Delta: )
+       (367, Delta: )
+       (368, Delta: )
+       (369, Delta: )
+       (370, Delta: )
+       (371, Delta: )
+
+<no location info>: error:
+    output was redirected with -o, but no output will be generated
+because there is no Main module.

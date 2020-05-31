@@ -3,14 +3,15 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE MultiWayIf #-}
 
 module Family
   ( Family (..),
+    AdjMap,
     ID,
     Node (..),
     GsM (..),
-    empty,
-    getErrors,
+    addEdge,
     insert,
     union,
     guardWith,
@@ -20,6 +21,7 @@ where
 
 import Constraints
 import Control.Monad.State
+import Control.Monad.Writer
 import qualified Data.HashMap.Lazy as HM
 import qualified Data.HashSet as HS
 import Data.Hashable
@@ -28,7 +30,6 @@ import DataTypes
 import GHC.Generics
 import GhcPlugins hiding (L, empty, isEmpty, singleton)
 import Types
-import Prelude hiding ((<>))
 
 -- An unlabelled directed graph
 type AdjMap = HM.HashMap (DataType Name) (HM.HashMap (K 'L) (HS.HashSet (K 'R)))
@@ -42,7 +43,7 @@ instance Outputable AdjMap where
           k2 <- HS.toList to
       ]
     where
-      pprCon k@(Dom _) d = ppr d <> parens (ppr k)
+      pprCon k@(Dom _) d = ppr d GhcPlugins.<> parens (ppr k)
       pprCon k _ = ppr k
 
 instance Monad m => Refined Name m where
@@ -83,8 +84,14 @@ overlay = HM.unionWith (HM.unionWith HS.union)
 difference :: AdjMap -> AdjMap -> AdjMap
 difference = HM.differenceWith (\sg -> Just . HM.differenceWith (\rs -> Just . HS.difference rs) sg)
 
-commonSubgraph :: AdjMap -> AdjMap -> Maybe AdjMap
-commonSubgraph = undefined
+intersect :: AdjMap -> AdjMap -> Maybe AdjMap
+intersect l r = chkEmpty $ HM.intersectionWith (HM.intersectionWith HS.intersection) l r
+  where
+    chkEmpty m
+      | null m = Nothing
+      | all null m = Nothing
+      | all (all null) m = Nothing
+      | otherwise = Just m
 
 -- Restrict a graph to only nodes from a certain set
 restrictGraph :: [RVar] -> AdjMap -> AdjMap
@@ -97,12 +104,15 @@ restrictGraph xs = fmap (HM.foldrWithKey go HM.empty)
     interface _ = True
 
 -- Accumalate errors from a graph
-graphErrors :: AdjMap -> Maybe [Atomic]
-graphErrors = HM.foldrWithKey (\d m k -> HM.foldrWithKey (\x -> mappend . foldMap (unsafeEdge d x)) k m) Nothing
+unsafeEdges :: AdjMap -> Maybe [Atomic]
+unsafeEdges = HM.foldrWithKey (\d m k -> HM.foldrWithKey (\x -> mappend . foldMap (unsafeEdge d x)) k m) Nothing
   where
     unsafeEdge d l r
       | safe l r = Nothing
       | otherwise = Just [Constraint l r d]
+
+hasUnsafeEdges :: AdjMap -> Bool
+hasUnsafeEdges = getAny . foldMap (HM.foldrWithKey (\x -> mappend . foldMap (Any . not . safe x)) mempty)
 
 -- Take the transitive closure of a graph from a specified frontier
 trans :: AdjMap -> HS.HashSet (K 'L) -> AdjMap
@@ -146,30 +156,30 @@ instance Outputable Family where
 instance GsM m => Refined Family m where
   domain (ID i) =
     getNode i >>= \case
-      Tip a -> foldM (\l -> fmap (L.union l) . domain) [] a
-      Delta ds -> foldM (\l -> fmap (L.union l) . domain) [] ds
+      Node a ds -> do
+        da <- foldM (\l -> fmap (L.union l) . domain) [] a
+        foldM (\l -> fmap (L.union l) . domain) da ds
   domain (Error e) = foldM (\l -> fmap (L.union l) . domain) [] e
   domain Empty = return []
 
   rename x y (ID i) =
     getNode i >>= \case
-      Tip a -> mapM (rename x y) a >>= fromNode . Tip
-      Delta ds -> mapM (rename x y) ds >>= fromNode . Delta
+      Node a ds -> do
+        a' <- mapM (rename x y) a
+        ds' <- mapM (rename x y) ds
+        fromNode $ Node a' ds'
   rename x y (Error as) = Error <$> mapM (rename x y) as
   rename _ _ Empty = return Empty
 
 type ID = Int
 
 -- No delta map leads to an empty tip
--- Each key of the delta map is disjoint
 data Node
-  = Tip AdjMap
-  | Delta (HM.HashMap AdjMap Family)
+  = Node AdjMap (HM.HashMap AdjMap Family)
   deriving (Eq, Generic)
 
 instance Outputable Node where
-  ppr (Tip a) = text "Tip: " <+> ppr a
-  ppr (Delta a) = text "Delta: " <+> vcat (ppr <$> HM.toList a)
+  ppr (Node a ds) = text "Delta: " <+> ppr a <+> vcat (ppr <$> HM.toList ds)
 
 instance Hashable Node
 
@@ -179,116 +189,98 @@ class Monad m => GsM m where
   getNode :: ID -> m Node
   fromNode :: Node -> m Family
 
-empty :: GsM m => m Family
-empty = fromNode $ Tip HM.empty
-
-getErrors :: Family -> [Atomic]
-getErrors (Error e) = e
-getErrors _ = []
-
--- Is the family trivially satisfied
-isEmpty :: GsM m => Family -> m Bool
-isEmpty Empty = return True
-isEmpty (Error _) = return False
-isEmpty (ID i) =
-  getNode i >>= \case
-    Tip g -> return (not $ HM.null g)
-    Delta _ -> return False
-
--- Add a new delta, merging any common branches
-insertDeltas :: GsM m => AdjMap -> Family -> HM.HashMap AdjMap Family -> m (HM.HashMap AdjMap Family)
-insertDeltas delta k m =
-  case HM.traverseWithKey
-    ( \delta' k' ->
-        case commonSubgraph delta delta' of
-          Nothing -> Right k'
-          -- extract the first key that matches
-          -- ! Assumes the original delta map satisfies the invariants
-          Just delta'' -> Left (delta', delta'', k')
-    )
-    m of
-    Left (_, _, Empty) -> error "Delta map should not point to an empty tip!"
-    Left (delta', _, e@(Error _)) -> do
-      e' <- union e k -- Combine errors
-      return (HM.insert delta' e' m)
-    Left (delta', delta'', ID i) ->
-      getNode i >>= \case
-        Delta m' -> do
-          k' <- remove k delta'
-          m'' <-
-            insertDeltas delta'' k' m'
-              >>= fromNode . Delta
-          return (HM.insert delta' m'' m)
-        Tip g -> do
-          g' <-
-            fromNode (Tip $ difference g delta'')
-              >>= fromNode . Delta . HM.singleton delta''
-          return (HM.insert delta' g' m)
-    Right _ -> return (HM.insert delta k m)
-
--- Insert an edge into graph in the family
-insertUnguarded :: GsM m => Atomic -> Family -> m Family
-insertUnguarded a Empty = fromNode (Tip $ addEdge a HM.empty)
-insertUnguarded _ (Error e) = return (Error e)
-insertUnguarded a (ID i) =
-  getNode i >>= \case
-    Tip g -> fromNode (Tip $ addEdge a g)
-    Delta ds ->
-      insertDeltas (singleton a) Empty ds
-        >>= fromNode . Delta
-
-insert :: GsM m => Atomic -> Family -> Family -> m Family
-insert a g f =
-  insertUnguarded a Empty >>= guardWith g >>= union f
-
--- Remove a subgraph from every graph in the family
-remove :: GsM m => Family -> AdjMap -> m Family
-remove Empty _ = return Empty
-remove (Error e) _ = return (Error e)
-remove (ID i) g =
-  getNode i >>= \case
-    Tip g' -> fromNode (Tip $ difference g' g)
-    Delta ds ->
-      HM.foldrWithKey go (return HM.empty) ds
-        >>= fromNode . Delta
+insert :: GsM m => Atomic -> AdjMap -> Family -> m Family
+insert a g f -- Skip tautologies
+  | hasEdge a g || hasUnsafeEdges g = return f
+insert a _ (Error es)
+  | safe (left a) (right a) = return $ Error es
+  | otherwise = return $ Error (a : es)
+insert a g Empty = do
+  t <- fromNode $ Node (singleton a) HM.empty
+  fromNode $ Node HM.empty $ HM.singleton g t
+insert a g f@(ID i) = do
+  Node t ds <- getNode i
+  if hasEdge a t
+    then return f
+    else do
+      let g' = difference g t
+      (ds', Any found) <-
+        runWriterT
+          ( mapM
+              (go g')
+              (HM.toList ds)
+          )
+      if found
+        then fromNode $ Node t $ HM.fromList ds'
+        else do
+          -- If g' is disjoint from all existing branches
+          t' <- fromNode $ Node (singleton a) HM.empty
+          fromNode $ Node t $ HM.insert g' t' ds
   where
-    go delta k acc = do
-      k' <- remove k g
-      isEmpty k' >>= \case
-        True -> acc -- Remove trivially satisfied subgraphs, i.e. empty tips
-        False ->
-          acc >>= insertDeltas (difference delta g) k'
+    -- Rebuild with common prefixes
+    go :: GsM m => AdjMap -> (AdjMap, Family) -> WriterT Any m (AdjMap, Family)
+    go g' (delta, f) =
+      case g' `intersect` delta of
+        Nothing -> return (delta, f)
+        Just ig -> do
+          tell (Any True)
+          f' <- lift $ insert a (difference g' ig) f
+          return (ig, f')
 
--- Every combination of overlayed grgaphs
+-- Iteratively insert every edge in an adjacency map
+insertMany :: GsM m => AdjMap -> AdjMap -> Family -> m Family
+insertMany as g f =
+  HM.foldrWithKey
+    ( \d dm mf ->
+        HM.foldrWithKey
+          ( \l lm mf ->
+              foldr
+                ( \r mf ->
+                    mf >>= insert (Constraint l r d) g
+                )
+                mf
+                lm
+          )
+          mf
+          dm
+    )
+    (return f)
+    as
+
+-- Union of constriant sets from two families
 union :: GsM m => Family -> Family -> m Family
-union Empty x = return x
-union x Empty = return x
-union (Error e) (Error e') = return (Error (mappend e e'))
-union (Error e) _ = return (Error e)
-union _ (Error e) = return (Error e)
-union x@(ID i) y@(ID j) =
-  getNode i >>= \case
-    Delta ds ->
-      HM.traverseWithKey (\d k -> remove y d >>= union k) ds
-        >>= fromNode . Delta
-    Tip g ->
-      getNode j >>= \case
-        Tip g' -> fromNode (Tip $ overlay g g')
-        Delta ds ->
-          HM.traverseWithKey (\d k -> remove x d >>= union k) ds
-            >>= fromNode . Delta
+union (Error es) (Error es') = return (Error (es ++ es'))
+union (Error es) _ = return (Error es)
+union Empty f = return f
+union f f' = go HM.empty f (return f')
+  where
+    go _ (Error es) mf =
+      mf >>= \case
+        Error es' -> return (Error (es ++ es')) -- Add errors to mf
+        _ -> return (Error es)
+    go _ Empty mf = mf
+    go delta (ID j) mf = do
+      f <- mf
+      Node t ds <- getNode j
+      HM.foldrWithKey
+        go
+        (insertMany t delta f)
+        ds
 
 -- Make a family that is conditional on another family
-guardWith :: GsM m => Family -> Family -> m Family
-guardWith Empty x = return x
-guardWith (Error _) _ = empty
-guardWith (ID i) x =
-  getNode i >>= \case
-    Delta ds ->
-      HM.traverseWithKey (\d k -> remove x d >>= guardWith k) ds
-        >>= fromNode . Delta
-    Tip g ->
-      remove x g >>= fromNode . Delta . HM.singleton g
+guardWith :: GsM m => Family -> AdjMap -> m Family
+guardWith Empty _ = return Empty
+guardWith (Error es) _ = return (Error es)
+guardWith (ID i) g = do
+  Node t ds <- getNode i
+  HM.foldrWithKey
+    ( \delta k mf -> do
+        f <- mf
+        k' <- guardWith k (overlay g delta)
+        union f k'
+    )
+    (insertMany t g Empty)
+    ds
 
 -- Remove a set of nodes adding any transitive edges
 restrict :: GsM m => [RVar] -> Family -> m Family
@@ -299,23 +291,21 @@ restrict s = go HM.empty
     go :: GsM m => AdjMap -> Family -> m Family
     go _ Empty = return Empty
     go _ (Error e) = return $ Error e
-    go x (ID i) =
-      getNode i >>= \case
-        Tip g -> do
-          let y = transWith x g
-          case graphErrors y of
-            Nothing -> fromNode $ Tip $ difference (restrictGraph s y) x
-            Just e -> return $ Error e
-        Delta ds ->
+    go x (ID i) = do
+      Node t ds <- getNode i
+      let t' = transWith x t
+      case unsafeEdges t' of
+        Just e -> return $ Error e
+        Nothing ->
           HM.foldrWithKey
             ( \delta k acc -> do
                 let y = transWith x delta
-                case graphErrors y of
+                case unsafeEdges y of
                   Just _ -> acc
                   Nothing -> do
                     k' <- go y k
-                    acc >>= insertDeltas (difference (restrictGraph s y) x) k'
+                    k'' <- guardWith k' (restrictGraph s y)
+                    acc >>= union k''
             )
-            (return HM.empty)
+            (fromNode $ Node (restrictGraph s t') HM.empty)
             ds
-            >>= fromNode . Delta

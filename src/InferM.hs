@@ -73,7 +73,7 @@ data InferEnv
         allowContra :: Bool,
         modName :: Module,
         branchPath :: Path,
-        branchGuard :: Family,
+        branchGuard :: AdjMap,
         varEnv :: Context,
         inferLoc :: SrcSpan
       }
@@ -95,7 +95,9 @@ instance Outputable InferState where
 instance GsM InferM where
   getNode i =
     gets (I.lookup i . nodes) >>= \case
-      Nothing -> error ("No node with that ID!" ++ show i)
+      Nothing -> do
+        () <- gets nodes >>= pprTraceM "nodes" . ppr
+        pprPanic "No node with that ID" (ppr i)
       Just n -> return n
 
   -- TODO: make empty typ empty
@@ -110,7 +112,7 @@ instance GsM InferM where
               hashes = H.insert n i hs
             }
         return $ ID i
-      Just i -> return $ ID i
+      Just i -> return (ID i)
 
 --  memo op a =
 --    gets (H.lookup op . InferM.memo) >>= \case
@@ -172,12 +174,11 @@ branch e ks x d m
     s <- mkSet ks
     case toAtomic s (Dom x) (getName <$> d) of
       Nothing -> error "Error in creating guard"
-      Just cs -> do
-        new_guard <- foldM (\a c -> insert c Empty a) curr_guard cs 
+      Just cs ->
         local
           ( \env ->
               env
-                { branchGuard = new_guard,
+                { branchGuard = foldr addEdge curr_guard cs,
                   branchPath = (e, getName <$> ks) : branchPath env
                 }
           )
@@ -192,12 +193,11 @@ branch' ks x d m
     s <- mkSet ks
     case toAtomic s (Dom x) (getName <$> d) of
       Nothing -> error "Error in creating guard"
-      Just cs -> do
-        new_guard <- foldM (\a c -> insert c Empty a) curr_guard cs 
+      Just cs -> 
         local
           ( \env ->
               env
-                { branchGuard = new_guard
+                { branchGuard = foldr addEdge curr_guard cs
                 }
           )
           m
@@ -234,7 +234,7 @@ runInferM run unroll allow_contra mod_name init_env =
     (
         local (\e -> e {varEnv = init_env}) run
     )
-    (InferEnv unroll allow_contra mod_name [] Empty M.empty (UnhelpfulSpan (mkFastString "Top level")))
+    (InferEnv unroll allow_contra mod_name [] H.empty M.empty (UnhelpfulSpan (mkFastString "Top level")))
     (InferState 0 Empty 0 I.empty H.empty)
 
 -- Transitively remove local constraints and attach them to variables
@@ -244,5 +244,7 @@ saturate ts = do
   cg <- gets congraph >>= restrict interface
   modify (\s -> s {- InferM.memo = H.empty, -} {hashes = H.empty, congraph = Empty})
   l <- asks inferLoc
-  tell [SrcError {collision = l, constraint = e} | e <- getErrors cg]
+  case cg of
+    Error es -> tell [SrcError {collision = l, constraint = e} | e <- es]
+    _ -> return ()
   return ((\s -> s {boundvs = interface, constraints = Just cg}) <$> ts)
