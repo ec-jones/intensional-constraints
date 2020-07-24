@@ -1,5 +1,7 @@
 # Intensional Constraints
 
+### This repository is depreciated! Check out the latest version [a here](https://github.com/bristolpl/intensional-datatys)
+
 The pattern-match safety problem is to verify that a given functional program will never crash due to nonexhaustive
 patterns in its function definitions. This tool is designed to prevent this type of crash.
 
